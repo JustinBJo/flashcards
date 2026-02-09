@@ -14,7 +14,33 @@ class FlashcardApp {
             test: null
         };
         
+        // Detect base path for GitHub Pages
+        this.basePath = this.getBasePath();
+        
         this.init();
+    }
+    
+    /**
+     * Get the base path for the application
+     * Handles both local development and GitHub Pages deployment
+     */
+    getBasePath() {
+        // For GitHub Pages, use the repository path
+        // For local dev, use current directory
+        const path = window.location.pathname;
+        
+        // If we're on GitHub Pages (username.github.io/repo-name/)
+        // Extract the base path
+        if (window.location.hostname.includes('github.io')) {
+            const pathParts = path.split('/').filter(p => p);
+            if (pathParts.length > 0) {
+                // Return /repo-name/ format
+                return `/${pathParts[0]}/`;
+            }
+        }
+        
+        // For local development or root hosting
+        return './';
     }
     
     async init() {
@@ -78,8 +104,11 @@ class FlashcardApp {
         const wordlist = this.wordlists[index];
         
         try {
-            // Load the wordlist JSON file
-            const response = await fetch(`./wordlists/${wordlist.filename}`);
+            // Load the wordlist JSON file with proper base path
+            const url = `${this.basePath}wordlists/${wordlist.filename}`;
+            console.log('Loading wordlist from:', url);
+            
+            const response = await fetch(url);
             if (!response.ok) throw new Error('Failed to load wordlist');
             
             const data = await response.json();
