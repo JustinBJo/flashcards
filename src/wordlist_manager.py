@@ -29,30 +29,46 @@ class WordlistManager:
     def get_available_wordlists(self) -> List[str]:
         """
         Get list of available wordlist names.
+        Scans both root directory and subdirectories for JSON files.
         
         Returns:
-            List of wordlist names (without .json extension)
+            List of wordlist names (with folder prefix if in subdirectory)
         """
         if not self.wordlists_dir.exists():
             return []
         
         wordlists = []
+        
+        # Check root directory for JSON files
         for file in self.wordlists_dir.glob("*.json"):
             wordlists.append(file.stem)
+        
+        # Check subdirectories for JSON files
+        for subdir in self.wordlists_dir.iterdir():
+            if subdir.is_dir():
+                for file in subdir.glob("*.json"):
+                    # Add as "foldername/filename"
+                    wordlists.append(f"{subdir.name}/{file.stem}")
         
         return sorted(wordlists)
     
     def load_wordlist(self, name: str) -> Optional[Dict[str, List[Dict[str, str]]]]:
         """
         Load a wordlist from JSON file.
+        Supports both root files and subdirectory files (e.g., "dutch/dutch_A2_01").
         
         Args:
             name: Name of the wordlist (without .json extension)
+                  Can be "filename" or "folder/filename"
             
         Returns:
             Dictionary with wordlist data or None if error
         """
-        file_path = self.wordlists_dir / f"{name}.json"
+        # Check if name includes a folder path
+        if '/' in name:
+            file_path = self.wordlists_dir / f"{name}.json"
+        else:
+            file_path = self.wordlists_dir / f"{name}.json"
         
         if not file_path.exists():
             print(f"Error: Wordlist '{name}' not found.")

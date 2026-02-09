@@ -161,7 +161,7 @@ class MemorizeMode {
                     <span class="stage-badge">Stage 1: Type Both</span>
                 </div>
                 
-                <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <div style="padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
                     <p style="margin-bottom: 0.5rem;"><strong>Word:</strong> ${pair.word}</p>
                     <p><strong>Meaning:</strong> ${pair.meaning}</p>
                 </div>
@@ -197,6 +197,9 @@ class MemorizeMode {
         document.getElementById('input-meaning').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.checkStageTypeBoth(question.wordIdx, pair.word, pair.meaning);
         });
+        
+        // Manually focus the first input field
+        document.getElementById('input-word').focus();
     }
     
     renderStageWordToMeaning(container, pair, question) {
@@ -229,6 +232,9 @@ class MemorizeMode {
         document.getElementById('input-answer').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.checkAnswer(question.wordIdx, pair.meaning);
         });
+        
+        // Manually focus the input field
+        document.getElementById('input-answer').focus();
     }
     
     renderStageMeaningToWord(container, pair, question) {
@@ -261,6 +267,9 @@ class MemorizeMode {
         document.getElementById('input-answer').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.checkAnswer(question.wordIdx, pair.word);
         });
+        
+        // Manually focus the input field
+        document.getElementById('input-answer').focus();
     }
     
     checkStageTypeBoth(wordIdx, correctWord, correctMeaning) {
@@ -397,6 +406,9 @@ class MemorizeMode {
     }
     
     cleanup() {
-        // Cleanup if needed
+        // Clear the container content
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
     }
 }

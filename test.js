@@ -4,12 +4,13 @@
  */
 
 class TestMode {
-    constructor(wordlist, container) {
+    constructor(wordlist, container, direction = 'random') {
         this.wordlist = wordlist;
         this.container = container;
         this.pairs = shuffleArray([...wordlist.pairs]);
         this.currentIndex = 0;
-        this.results = []; // Store {pair, userAnswer, correct}
+        this.results = []; // Store {pair, userAnswer, correct, direction}
+        this.direction = direction; // 'word-to-meaning', 'meaning-to-word', or 'random'
     }
     
     start() {
@@ -17,11 +18,18 @@ class TestMode {
     }
     
     showIntroduction() {
+        const directionText = {
+            'word-to-meaning': 'You will see words and type their meanings.',
+            'meaning-to-word': 'You will see meanings and type the words.',
+            'random': 'Questions will be in random directions (word→meaning or meaning→word).'
+        };
+        
         this.container.innerHTML = `
             <div class="question-card">
                 <h2 style="text-align: center; color: var(--primary);">✍️ Test Mode</h2>
                 <div style="text-align: center; margin: 2rem 0;">
                     <p style="margin-bottom: 1rem;">Test your knowledge with ${this.pairs.length} questions.</p>
+                    <p style="margin-bottom: 1rem;">${directionText[this.direction]}</p>
                     <p style="margin-bottom: 1rem;">Your answers will be scored at the end.</p>
                     <p><strong>Good luck!</strong></p>
                 </div>
@@ -41,7 +49,17 @@ class TestMode {
         }
         
         const pair = this.pairs[this.currentIndex];
-        const isWordToMeaning = Math.random() < 0.5;
+        
+        // Determine question direction based on test mode
+        let isWordToMeaning;
+        if (this.direction === 'word-to-meaning') {
+            isWordToMeaning = true;
+        } else if (this.direction === 'meaning-to-word') {
+            isWordToMeaning = false;
+        } else {
+            // Random
+            isWordToMeaning = Math.random() < 0.5;
+        }
         
         this.container.innerHTML = `
             <div class="progress-section">
@@ -79,6 +97,9 @@ class TestMode {
         document.getElementById('input-answer').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.submitAnswer(isWordToMeaning);
         });
+        
+        // Manually focus the input field
+        document.getElementById('input-answer').focus();
     }
     
     submitAnswer(isWordToMeaning) {
@@ -184,6 +205,9 @@ class TestMode {
     }
     
     cleanup() {
-        // Cleanup if needed
+        // Clear the container content
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
     }
 }

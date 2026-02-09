@@ -21,6 +21,7 @@
             <!-- Wordlist Selection Screen -->
             <section id="wordlist-screen" class="screen active">
                 <div class="container">
+                    <div id="breadcrumb-container"></div>
                     <h2>Select Word List</h2>
                     <div id="wordlist-list" class="card-list">
                         <p class="loading">Loading word lists...</p>
@@ -48,7 +49,7 @@
                             <p>Practice with immediate feedback</p>
                         </div>
                         
-                        <div class="mode-card" onclick="app.startMode('test')">
+                        <div class="mode-card" onclick="app.showTestOptions()">
                             <div class="mode-icon">✍️</div>
                             <h3>Test Mode</h3>
                             <p>Scored assessment of your knowledge</p>

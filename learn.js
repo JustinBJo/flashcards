@@ -7,7 +7,15 @@ class LearnMode {
     constructor(wordlist, container) {
         this.wordlist = wordlist;
         this.container = container;
-        this.pairs = shuffleArray([...wordlist.pairs]);
+        
+        // Create questions for both directions
+        const questions = [];
+        wordlist.pairs.forEach(pair => {
+            questions.push({ pair, isWordToMeaning: true });
+            questions.push({ pair, isWordToMeaning: false });
+        });
+        
+        this.questions = shuffleArray(questions);
         this.currentIndex = 0;
         this.correct = 0;
         this.incorrect = 0;
@@ -18,23 +26,22 @@ class LearnMode {
     }
     
     showQuestion() {
-        if (this.currentIndex >= this.pairs.length) {
+        if (this.currentIndex >= this.questions.length) {
             this.showSummary();
             return;
         }
         
-        const pair = this.pairs[this.currentIndex];
-        const isWordToMeaning = Math.random() < 0.5;
+        const { pair, isWordToMeaning } = this.questions[this.currentIndex];
         
         this.container.innerHTML = `
             <div class="progress-section">
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${(this.currentIndex / this.pairs.length) * 100}%"></div>
+                    <div class="progress-fill" style="width: ${(this.currentIndex / this.questions.length) * 100}%"></div>
                 </div>
                 <div class="progress-stats">
                     <div class="stat">
                         <div class="stat-value">${this.currentIndex + 1}</div>
-                        <div class="stat-label">of ${this.pairs.length}</div>
+                        <div class="stat-label">of ${this.questions.length}</div>
                     </div>
                     <div class="stat">
                         <div class="stat-value" style="color: var(--success)">${this.correct}</div>
@@ -49,7 +56,7 @@ class LearnMode {
             
             <div class="question-card">
                 <div class="question-header">
-                    <span>Question ${this.currentIndex + 1}/${this.pairs.length}</span>
+                    <span>Question ${this.currentIndex + 1}/${this.questions.length}</span>
                     <span class="stage-badge">${isWordToMeaning ? 'Word → Meaning' : 'Meaning → Word'}</span>
                 </div>
                 
@@ -73,12 +80,20 @@ class LearnMode {
         `;
         
         document.getElementById('input-answer').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.checkAnswer(isWordToMeaning);
+            if (e.key === 'Enter') {
+                const checkButton = document.querySelector('.action-buttons button');
+                if (checkButton) {
+                    checkButton.click();
+                }
+            }
         });
+        
+        // Manually focus the input field
+        document.getElementById('input-answer').focus();
     }
     
     checkAnswer(isWordToMeaning) {
-        const pair = this.pairs[this.currentIndex];
+        const { pair } = this.questions[this.currentIndex];
         const correctAnswer = isWordToMeaning ? pair.meaning : pair.word;
         const userAnswer = document.getElementById('input-answer').value;
         const feedbackArea = document.getElementById('feedback-area');
@@ -102,7 +117,7 @@ class LearnMode {
         const actionButtons = document.querySelector('.action-buttons');
         actionButtons.innerHTML = `
             <button onclick="app.modeInstances.learn.nextQuestion()">
-                ${this.currentIndex < this.pairs.length - 1 ? 'Next Question' : 'See Results'}
+                ${this.currentIndex < this.questions.length - 1 ? 'Next Question' : 'See Results'}
             </button>
         `;
     }
@@ -152,6 +167,9 @@ class LearnMode {
     }
     
     cleanup() {
-        // Cleanup if needed
+        // Clear the container content
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
     }
 }
