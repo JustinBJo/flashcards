@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Flashcard Learning Application - Master vocabulary with interactive study modes">
+    <meta name="theme-color" content="#2196F3">
+    <title>Flashcard Learning App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>📚 Flashcard Learning</h1>
+        </header>
+
+        <!-- Main Container -->
+        <main id="main-content">
+            <!-- Wordlist Selection Screen -->
+            <section id="wordlist-screen" class="screen active">
+                <div class="container">
+                    <h2>Select Word List</h2>
+                    <div id="wordlist-list" class="card-list">
+                        <p class="loading">Loading word lists...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mode Selection Screen -->
+            <section id="mode-screen" class="screen">
+                <div class="container">
+                    <button class="back-btn" onclick="app.showWordlistScreen()">← Back</button>
+                    <h2 id="wordlist-title">Select Mode</h2>
+                    <p id="wordlist-info" class="info-text"></p>
+                    
+                    <div class="mode-cards">
+                        <div class="mode-card" onclick="app.startMode('memorize')">
+                            <div class="mode-icon">🧠</div>
+                            <h3>Memorize Mode</h3>
+                            <p>Master all words through 3-stage learning</p>
+                        </div>
+                        
+                        <div class="mode-card" onclick="app.startMode('learn')">
+                            <div class="mode-icon">📖</div>
+                            <h3>Learn Mode</h3>
+                            <p>Practice with immediate feedback</p>
+                        </div>
+                        
+                        <div class="mode-card" onclick="app.startMode('test')">
+                            <div class="mode-icon">✍️</div>
+                            <h3>Test Mode</h3>
+                            <p>Scored assessment of your knowledge</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Session Screen (for all modes) -->
+            <section id="session-screen" class="screen">
+                <div class="container">
+                    <button class="back-btn" onclick="app.endSession()">⏹️ End Session</button>
+                    <div id="session-content">
+                        <!-- Dynamic content injected here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Also available as <a href="https://github.com/yourusername/flashcards" target="_blank">CLI version</a></p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="memorize.js"></script>
+    <script src="learn.js"></script>
+    <script src="test.js"></script>
+</body>
+</html>
