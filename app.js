@@ -79,7 +79,7 @@ class FlashcardApp {
         
         try {
             // Load the wordlist JSON file
-            const response = await fetch(`../wordlists/${wordlist.filename}`);
+            const response = await fetch(`./wordlists/${wordlist.filename}`);
             if (!response.ok) throw new Error('Failed to load wordlist');
             
             const data = await response.json();
