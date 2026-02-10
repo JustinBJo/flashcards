@@ -117,8 +117,8 @@ def select_mode(wordlist):
 
 def main():
     """Main application loop."""
-    # Use ../wordlists since we're running from src/ directory
-    manager = WordlistManager("../wordlists")
+    # WordlistManager will automatically find wordlists directory
+    manager = WordlistManager("wordlists")
     
     print("\n" + Colors.cyan("="*50))
     print(Colors.bold_cyan("  Welcome to Flashcard Learning Application!"))
