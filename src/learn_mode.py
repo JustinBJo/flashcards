@@ -32,7 +32,7 @@ class LearnMode:
             print(f"  {Colors.yellow('4.')} Back to main menu")
             print(Colors.cyan("="*50))
             
-            choice = input(Colors.magenta("\nYour choice: ")).strip()
+            choice = input(Colors.magenta("\nYour choice: ")).strip().lower()
             
             if choice == "1":
                 self._practice_loop("word_to_meaning")
@@ -40,7 +40,7 @@ class LearnMode:
                 self._practice_loop("meaning_to_word")
             elif choice == "3":
                 self._practice_loop("random")
-            elif choice == "4":
+            elif choice == "4" or choice == "back":
                 break
             else:
                 print(Colors.red("Invalid choice. Please enter 1, 2, 3, or 4."))
@@ -100,7 +100,7 @@ class LearnMode:
                     # Type the word
                     while True:
                         typed_word = input(Colors.magenta(f"Type the word: ")).strip()
-                        if typed_word == pair["word"]:
+                        if typed_word.lower() == pair["word"].lower():
                             print(Colors.green("✓ Correct!"))
                             break
                         else:
@@ -109,7 +109,7 @@ class LearnMode:
                     # Type the meaning
                     while True:
                         typed_meaning = input(Colors.magenta(f"Type the meaning: ")).strip()
-                        if typed_meaning == pair["meaning"]:
+                        if typed_meaning.lower() == pair["meaning"].lower():
                             print(Colors.green("✓ Correct!"))
                             break
                         else:

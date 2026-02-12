@@ -65,14 +65,22 @@ def select_wordlist(manager: WordlistManager):
                     return wordlist
             else:
                 print(Colors.red(f"❌ Invalid number. Please enter a number between 1 and {len(wordlists)}."))
-        # Check if user entered a name
-        elif choice in wordlists:
-            wordlist = manager.load_wordlist(choice)
-            if wordlist:
-                print(Colors.bold_green(f"\n✓ Loaded '{choice}' with {len(wordlist['pairs'])} word pairs."))
-                return wordlist
+        # Check if user entered a name (case-insensitive)
         else:
-            print(Colors.red(f"❌ Wordlist '{choice}' not found. Please enter a valid name or number."))
+            # Try to find a case-insensitive match
+            matched_wordlist = None
+            for wl in wordlists:
+                if wl.lower() == choice.lower():
+                    matched_wordlist = wl
+                    break
+            
+            if matched_wordlist:
+                wordlist = manager.load_wordlist(matched_wordlist)
+                if wordlist:
+                    print(Colors.bold_green(f"\n✓ Loaded '{matched_wordlist}' with {len(wordlist['pairs'])} word pairs."))
+                    return wordlist
+            else:
+                print(Colors.red(f"❌ Wordlist '{choice}' not found. Please enter a valid name or number."))
 
 
 def select_mode(wordlist):
@@ -96,7 +104,7 @@ def select_mode(wordlist):
         print(f"  {Colors.yellow('5.')} Quit application")
         print(Colors.cyan("="*50))
         
-        choice = input(Colors.magenta("\nYour choice: ")).strip()
+        choice = input(Colors.magenta("\nYour choice: ")).strip().lower()
         
         if choice == "1":
             memorize_mode = MemorizeMode(wordlist)
@@ -107,9 +115,9 @@ def select_mode(wordlist):
         elif choice == "3":
             test_mode = TestMode(wordlist)
             test_mode.start()
-        elif choice == "4":
+        elif choice == "4" or choice == "back":
             return True  # Continue to select new wordlist
-        elif choice == "5":
+        elif choice == "5" or choice == "quit":
             return False  # Exit application
         else:
             print(Colors.red("Invalid choice. Please enter 1, 2, 3, 4, or 5."))
