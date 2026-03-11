@@ -37,6 +37,12 @@
                     <p id="wordlist-info" class="info-text"></p>
                     
                     <div class="mode-cards">
+                        <div class="mode-card" onclick="app.startMode('view')">
+                            <div class="mode-icon">📋</div>
+                            <h3>View Mode</h3>
+                            <p>Display all words with their meanings</p>
+                        </div>
+                        
                         <div class="mode-card" onclick="app.startMode('memorize')">
                             <div class="mode-icon">🧠</div>
                             <h3>Memorize Mode</h3>
@@ -77,6 +83,7 @@
 
     <!-- Scripts -->
     <script src="app.js"></script>
+    <script src="view.js"></script>
     <script src="memorize.js"></script>
     <script src="learn.js"></script>
     <script src="test.js"></script>

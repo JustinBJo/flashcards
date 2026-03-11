@@ -4,6 +4,7 @@ Main entry point for the command-line flashcard memorization tool.
 """
 import sys
 from wordlist_manager import WordlistManager
+from view_mode import ViewMode
 from learn_mode import LearnMode
 from test_mode import TestMode
 from memorize_mode import MemorizeMode
@@ -97,30 +98,34 @@ def select_mode(wordlist):
         print("\n" + Colors.cyan("="*50))
         print(Colors.bold_cyan("            SELECT MODE"))
         print(Colors.cyan("="*50))
-        print(f"  {Colors.yellow('1.')} Memorize Mode - Master all words")
-        print(f"  {Colors.yellow('2.')} Learn Mode - Practice with feedback")
-        print(f"  {Colors.yellow('3.')} Test Mode - Scored assessment")
-        print(f"  {Colors.yellow('4.')} Back to wordlist selection")
-        print(f"  {Colors.yellow('5.')} Quit application")
+        print(f"  {Colors.yellow('1.')} View Mode - Display all words")
+        print(f"  {Colors.yellow('2.')} Memorize Mode - Master all words")
+        print(f"  {Colors.yellow('3.')} Learn Mode - Practice with feedback")
+        print(f"  {Colors.yellow('4.')} Test Mode - Scored assessment")
+        print(f"  {Colors.yellow('5.')} Back to wordlist selection")
+        print(f"  {Colors.yellow('6.')} Quit application")
         print(Colors.cyan("="*50))
         
         choice = input(Colors.magenta("\nYour choice: ")).strip().lower()
         
         if choice == "1":
+            view_mode = ViewMode(wordlist)
+            view_mode.start()
+        elif choice == "2":
             memorize_mode = MemorizeMode(wordlist)
             memorize_mode.start()
-        elif choice == "2":
+        elif choice == "3":
             learn_mode = LearnMode(wordlist)
             learn_mode.start()
-        elif choice == "3":
+        elif choice == "4":
             test_mode = TestMode(wordlist)
             test_mode.start()
-        elif choice == "4" or choice == "back":
+        elif choice == "5" or choice == "back":
             return True  # Continue to select new wordlist
-        elif choice == "5" or choice == "quit":
+        elif choice == "6" or choice == "quit":
             return False  # Exit application
         else:
-            print(Colors.red("Invalid choice. Please enter 1, 2, 3, 4, or 5."))
+            print(Colors.red("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6."))
 
 
 def main():

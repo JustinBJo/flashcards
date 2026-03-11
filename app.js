@@ -9,6 +9,7 @@ class FlashcardApp {
         this.currentWordlist = null;
         this.currentMode = null;
         this.modeInstances = {
+            view: null,
             memorize: null,
             learn: null,
             test: null
@@ -333,6 +334,10 @@ class FlashcardApp {
         sessionContent.innerHTML = '';
         
         switch(mode) {
+            case 'view':
+                this.modeInstances.view = new ViewMode(this.currentWordlist, sessionContent);
+                this.modeInstances.view.start();
+                break;
             case 'memorize':
                 this.modeInstances.memorize = new MemorizeMode(this.currentWordlist, sessionContent);
                 this.modeInstances.memorize.start();
