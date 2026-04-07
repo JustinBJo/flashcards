@@ -276,8 +276,8 @@ class MemorizeMode {
         const userWord = document.getElementById('input-word').value;
         const userMeaning = document.getElementById('input-meaning').value;
         
-        const wordCorrect = userWord === correctWord;
-        const meaningCorrect = userMeaning === correctMeaning;
+        const wordCorrect = normalizeString(userWord) === normalizeString(correctWord);
+        const meaningCorrect = normalizeString(userMeaning) === normalizeString(correctMeaning);
         
         const feedbackArea = document.getElementById('feedback-area');
         

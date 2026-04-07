@@ -18,7 +18,17 @@ class WordlistManager:
         Args:
             wordlists_dir: Directory containing JSON wordlist files
         """
-        self.wordlists_dir = Path(wordlists_dir)
+        # Convert to Path and resolve to absolute path
+        wordlists_path = Path(wordlists_dir)
+        
+        # If it's a relative path, resolve it relative to the script's parent directory
+        if not wordlists_path.is_absolute():
+            # Get the directory containing this script file
+            script_dir = Path(__file__).parent
+            # Go up one level to project root, then to wordlists
+            wordlists_path = (script_dir / ".." / wordlists_dir).resolve()
+        
+        self.wordlists_dir = wordlists_path
         self._ensure_wordlists_directory()
     
     def _ensure_wordlists_directory(self):

@@ -4,6 +4,7 @@ Main entry point for the command-line flashcard memorization tool.
 """
 import sys
 from wordlist_manager import WordlistManager
+from view_mode import ViewMode
 from learn_mode import LearnMode
 from test_mode import TestMode
 from memorize_mode import MemorizeMode
@@ -65,14 +66,22 @@ def select_wordlist(manager: WordlistManager):
                     return wordlist
             else:
                 print(Colors.red(f"❌ Invalid number. Please enter a number between 1 and {len(wordlists)}."))
-        # Check if user entered a name
-        elif choice in wordlists:
-            wordlist = manager.load_wordlist(choice)
-            if wordlist:
-                print(Colors.bold_green(f"\n✓ Loaded '{choice}' with {len(wordlist['pairs'])} word pairs."))
-                return wordlist
+        # Check if user entered a name (case-insensitive)
         else:
-            print(Colors.red(f"❌ Wordlist '{choice}' not found. Please enter a valid name or number."))
+            # Try to find a case-insensitive match
+            matched_wordlist = None
+            for wl in wordlists:
+                if wl.lower() == choice.lower():
+                    matched_wordlist = wl
+                    break
+            
+            if matched_wordlist:
+                wordlist = manager.load_wordlist(matched_wordlist)
+                if wordlist:
+                    print(Colors.bold_green(f"\n✓ Loaded '{matched_wordlist}' with {len(wordlist['pairs'])} word pairs."))
+                    return wordlist
+            else:
+                print(Colors.red(f"❌ Wordlist '{choice}' not found. Please enter a valid name or number."))
 
 
 def select_mode(wordlist):
@@ -89,36 +98,40 @@ def select_mode(wordlist):
         print("\n" + Colors.cyan("="*50))
         print(Colors.bold_cyan("            SELECT MODE"))
         print(Colors.cyan("="*50))
-        print(f"  {Colors.yellow('1.')} Memorize Mode - Master all words")
-        print(f"  {Colors.yellow('2.')} Learn Mode - Practice with feedback")
-        print(f"  {Colors.yellow('3.')} Test Mode - Scored assessment")
-        print(f"  {Colors.yellow('4.')} Back to wordlist selection")
-        print(f"  {Colors.yellow('5.')} Quit application")
+        print(f"  {Colors.yellow('1.')} View Mode - Display all words")
+        print(f"  {Colors.yellow('2.')} Memorize Mode - Master all words")
+        print(f"  {Colors.yellow('3.')} Learn Mode - Practice with feedback")
+        print(f"  {Colors.yellow('4.')} Test Mode - Scored assessment")
+        print(f"  {Colors.yellow('5.')} Back to wordlist selection")
+        print(f"  {Colors.yellow('6.')} Quit application")
         print(Colors.cyan("="*50))
         
-        choice = input(Colors.magenta("\nYour choice: ")).strip()
+        choice = input(Colors.magenta("\nYour choice: ")).strip().lower()
         
         if choice == "1":
+            view_mode = ViewMode(wordlist)
+            view_mode.start()
+        elif choice == "2":
             memorize_mode = MemorizeMode(wordlist)
             memorize_mode.start()
-        elif choice == "2":
+        elif choice == "3":
             learn_mode = LearnMode(wordlist)
             learn_mode.start()
-        elif choice == "3":
+        elif choice == "4":
             test_mode = TestMode(wordlist)
             test_mode.start()
-        elif choice == "4":
+        elif choice == "5" or choice == "back":
             return True  # Continue to select new wordlist
-        elif choice == "5":
+        elif choice == "6" or choice == "quit":
             return False  # Exit application
         else:
-            print(Colors.red("Invalid choice. Please enter 1, 2, 3, 4, or 5."))
+            print(Colors.red("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6."))
 
 
 def main():
     """Main application loop."""
-    # Use ../wordlists since we're running from src/ directory
-    manager = WordlistManager("../wordlists")
+    # WordlistManager will automatically find wordlists directory
+    manager = WordlistManager("wordlists")
     
     print("\n" + Colors.cyan("="*50))
     print(Colors.bold_cyan("  Welcome to Flashcard Learning Application!"))

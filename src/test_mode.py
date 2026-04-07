@@ -27,16 +27,49 @@ class TestMode:
         print(Colors.bold_cyan("              TEST MODE"))
         print(Colors.cyan("="*50))
         
+        # Select test direction mode
+        test_mode = self._select_test_mode()
+        if test_mode is None:
+            return
+        
         # Get number of questions
         num_questions = self._get_question_count()
         if num_questions is None:
             return
         
         # Run the test
-        results = self._run_test(num_questions)
+        results = self._run_test(num_questions, test_mode)
         
         # Display results
-        self._display_results(results, num_questions)
+        self._display_results(results, num_questions, test_mode)
+    
+    def _select_test_mode(self) -> str:
+        """
+        Prompt user to select test mode.
+        
+        Returns:
+            Test mode string ('word-to-meaning', 'meaning-to-word', 'random') or None if cancelled
+        """
+        while True:
+            print(f"\n{Colors.bold('Select Test Direction:')}")
+            print(f"  {Colors.yellow('1.')} Word → Meaning (you see the word, type the meaning)")
+            print(f"  {Colors.yellow('2.')} Meaning → Word (you see the meaning, type the word)")
+            print(f"  {Colors.yellow('3.')} Random (questions in random directions)")
+            print(f"  {Colors.yellow('4.')} Back to menu")
+            print(Colors.cyan("="*50))
+            
+            choice = input(Colors.magenta("\nYour choice: ")).strip().lower()
+            
+            if choice == "1":
+                return "word-to-meaning"
+            elif choice == "2":
+                return "meaning-to-word"
+            elif choice == "3":
+                return "random"
+            elif choice == "4" or choice == "back":
+                return None
+            else:
+                print(Colors.red("Invalid choice. Please enter 1, 2, 3, or 4."))
     
     def _get_question_count(self) -> int:
         """
@@ -63,12 +96,13 @@ class TestMode:
             except ValueError:
                 print(Colors.red("Invalid input. Please enter a number."))
     
-    def _run_test(self, num_questions: int) -> List[Dict]:
+    def _run_test(self, num_questions: int, test_mode: str) -> List[Dict]:
         """
         Run the test with specified number of questions.
         
         Args:
             num_questions: Number of questions to ask
+            test_mode: Test direction ('word-to-meaning', 'meaning-to-word', or 'random')
             
         Returns:
             List of result dictionaries
@@ -77,20 +111,34 @@ class TestMode:
         test_pairs = random.sample(self.pairs, num_questions)
         results = []
         
+        mode_display = {
+            "word-to-meaning": "Word → Meaning",
+            "meaning-to-word": "Meaning → Word",
+            "random": "Random Direction"
+        }
+        
         print(f"\n{Colors.cyan('='*50)}")
         print(Colors.bold_cyan(f"  TEST STARTED - {num_questions} questions"))
+        print(Colors.bold(f"  Mode: {Colors.blue(mode_display[test_mode])}"))
         print(f"{Colors.cyan('='*50)}\n")
         
         for i, pair in enumerate(test_pairs, 1):
-            # Randomly decide: show word or meaning
-            if random.choice([True, False]):
+            # Determine question direction based on test mode
+            if test_mode == "word-to-meaning":
+                is_word_to_meaning = True
+            elif test_mode == "meaning-to-word":
+                is_word_to_meaning = False
+            else:  # random
+                is_word_to_meaning = random.choice([True, False])
+            
+            if is_word_to_meaning:
                 question = pair["word"]
                 correct_answer = pair["meaning"]
-                question_type = "Word"
+                question_type = "Word → Meaning"
             else:
                 question = pair["meaning"]
                 correct_answer = pair["word"]
-                question_type = "Meaning"
+                question_type = "Meaning → Word"
             
             print(Colors.yellow(f"Question {i}/{num_questions}"))
             print(f"{Colors.bold(question_type)}: {Colors.blue(question)}")
@@ -114,19 +162,27 @@ class TestMode:
         
         return results
     
-    def _display_results(self, results: List[Dict], total_questions: int):
+    def _display_results(self, results: List[Dict], total_questions: int, test_mode: str):
         """
         Display test results with score and wrong answers.
         
         Args:
             results: List of result dictionaries
             total_questions: Total number of questions
+            test_mode: Test direction that was used
         """
+        mode_display = {
+            "word-to-meaning": "Word → Meaning",
+            "meaning-to-word": "Meaning → Word",
+            "random": "Random Direction"
+        }
+        
         correct_count = sum(1 for r in results if r["is_correct"])
         percentage = (correct_count / total_questions) * 100
         
         print("\n" + Colors.cyan("="*50))
         print(Colors.bold_cyan("              TEST RESULTS"))
+        print(Colors.bold(f"       Mode: {Colors.blue(mode_display[test_mode])}"))
         print(Colors.cyan("="*50))
         
         # Determine color based on percentage
@@ -160,3 +216,4 @@ class TestMode:
         
         print(Colors.cyan("="*50))
         input(Colors.magenta("\nPress Enter to return to main menu..."))
+

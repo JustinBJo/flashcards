@@ -115,7 +115,7 @@ class MemorizeMode:
             # Ask if user wants to continue
             if self.words_in_pool or self.words_not_yet_introduced:
                 continue_choice = input(Colors.magenta("\nContinue to next run? [Y/n]: ")).strip().lower()
-                if continue_choice and continue_choice != 'y':
+                if continue_choice and continue_choice not in ['y', 'yes', '']:
                     print(Colors.yellow("\nSession paused. Progress has been saved."))
                     self._display_progress()
                     return
@@ -219,9 +219,9 @@ class MemorizeMode:
         if typed_meaning.lower() == "end session":
             return "quit"
         
-        # Check both
-        word_correct = typed_word == word
-        meaning_correct = typed_meaning == meaning
+        # Check both (case-insensitive)
+        word_correct = typed_word.lower() == word.lower()
+        meaning_correct = typed_meaning.lower() == meaning.lower()
         
         if word_correct and meaning_correct:
             print(Colors.bold_green("✓ Perfect! Both correct!"))
